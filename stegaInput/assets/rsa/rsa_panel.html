@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="utf-8" />
+
+<head>
+    <title>rsa在线加密|rsa加密工具|rsa在线解密|rsa在线解密工具|rsa在线加密解密</title>
+    <meta name="keywords" content="rsa在线加密,rsa加密工具,rsa在线解密,rsa在线解密工具,rsa在线加密解密,RSA私钥生成,RSA公钥生成">
+    <meta name="description" content="通过rsa在线加密解密工具，可以在线rsa加密,rsa加密工具,rsa在线解密,rsa在线解密工具,RSA私钥生成,RSA公钥生成。">
+    <!--
+    <link href="/skin/css/bootstrap.min.css" rel="stylesheet">
+    -->
+    <!-- Styles 
+    <link href="/skin/css/theme.css" rel="stylesheet">
+
+    <script src="/skin/js/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    -->
+</head>
+
+<body>
+
+    <!--
+    <script src="js/bm8.js"></script>    
+    -->
+    <script type="text/javascript" src="js/jsencrypt.js"></script>
+
+    <style>
+        /* 下拉按钮样式 */
+        
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 36px;
+            border: none;
+            cursor: pointer;
+        }
+        /* 容器 <div> - 需要定位下拉内容 */
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        /* 下拉内容 (默认隐藏) */
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            padding: 30px 30px;
+            background-color: #f9f9f9;
+            min-width: 560px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        }
+        /* 下拉菜单的链接 */
+        
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-content textarea {
+            color: black;
+            width: 90%;
+            padding: 10px 10px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-content button {
+            color: white;
+            width: 20%;
+            height: 5%;
+            padding: 10px 10px;
+            text-decoration: none;
+            display: block;
+        }
+        /* 鼠标移上去后修改下拉菜单链接颜色 */
+        
+        .dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+        /* 在鼠标移上去后显示下拉菜单 */
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        /* 当下拉内容显示后修改下拉按钮的背景颜色 */
+        
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+    </style>
+
+    <div class="menu">
+        <div class="dropdown">
+            <button class="dropbtn">我的密钥对</button>
+            <div class="dropdown-content">
+                <!-- <input type="button" id="generate" value="随机生成密钥 generate keypair" style="height:15%;"> </br> -->
+                <div id="generate" class="dropbtn">随机生成密钥 generate keypair</div>
+                </br>
+                </br>
+                </br>
+                公钥：发给朋友</br>
+                This is your PUBLIC key. Send it to sender and ask them to use encrypt.html to encrypt a message for you.</br>
+                <span><textarea id="my_pubkey" readonly onfocus="this.select();"></textarea></span><span><button id="copy_mypubkey_btn" class="dropbtn">复制</button></span>
+                </br>
+                私钥：不要发给任何人</br>
+                This is your PRIVATE key. Do not send it to anyone! Instead, save it and use decrypt.html to decrypt an encrypted message.</br>
+                <textarea id="my_privkey" readonly onfocus="this.select();"></textarea> </br>
+                Note: These two keys form a pair: messages encrypted with above public key can be decrypted only with above private key.</br>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropbtn">测试按钮</button>
+            <div class="dropdown-content">
+                <!--form可以将get_file和reset联系起来-->
+                <form>
+                    <span><input type="file" id="get_file" name="选取文件"/></span><span><input type="reset" id="reset_btn" value="取消"/></span>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+
+        </br>
+        <textarea id="secret_txt" style="width:95%; height:350px;"></textarea></br>
+        </br>
+        </br>
+        <!--<button id="encrypt_btn">加密</button>-->
+        <!--<button id="decrypt_btn">解密</button>-->
+        <!--<textarea id="encrypted_txt"></textarea>-->
+        <span id="encrypt_btn" class="dropbtn">加密</span>
+        <span id="decrypt_btn" class="dropbtn">解密</span>
+
+    </div>
+
+    <script>
+        //Motion for controls
+
+        $("#encrypt_btn").onclick = function() {
+            //alert("开始加密");
+            //alert("用公钥" + $("#my_pubkey").value + "加密明文：" + $("#secret_txt").value);
+            $("#secret_txt").value = RSAencrypt($("#my_pubkey").value, $("#secret_txt").value);
+        };
+
+        $("#decrypt_btn").onclick = function() {
+            //alert("开始加密");
+            $("#secret_txt").value = RSAdecrypt($("#my_privkey").value, $("#secret_txt").value);
+
+        };
+
+        function $(s) {
+            return document.querySelector(s)
+        };
+
+        function bin2text(bin) {
+            return btoa(String.fromCharCode(...new Uint8Array(bin)));
+        };
+
+        function autosize(textarea) {
+            textarea.style.height = "";
+            textarea.style.height = textarea.scrollHeight + 3 + "px"
+        };
+
+        $('#generate').onclick = function() {
+            //alert("生成密钥对");
+            $('#my_pubkey').value = "";
+            $('#my_privkey').value = "";
+            window.crypto.subtle.generateKey({
+                        name: "RSA-OAEP",
+                        modulusLength: 4096, //can be 1024, 2048, or 4096
+                        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+                        hash: {
+                            name: "SHA-256"
+                        }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+                    },
+                    true, //whether the key is extractable (i.e. can be used in exportKey)
+                    ["encrypt", "decrypt"] //must be ["encrypt", "decrypt"] or ["wrapKey", "unwrapKey"]
+                )
+                .then(function(key) {
+                    //returns a keypair object
+                    window.crypto.subtle.exportKey(
+                            "pkcs8", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+                            key.privateKey //can be a publicKey or privateKey, as long as extractable was true
+                        )
+                        .then(function(keydata) {
+                            //returns the exported key data
+                            console.log('private', keydata);
+                            // $('#my_privkey').value=keydata.n;
+                            $('#my_privkey').value = bin2text(keydata);
+                            //autosize($('#my_privkey'));
+                        })
+                        .catch(function(err) {
+                            console.error(err);
+                        });
+                    window.crypto.subtle.exportKey(
+                            "spki", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+                            key.publicKey //can be a publicKey or privateKey, as long as extractable was true
+                        )
+                        .then(function(keydata) {
+                            //returns the exported key data
+                            console.log('public', keydata);
+                            $('#my_pubkey').value = bin2text(keydata);
+                            //autosize($('#my_pubkey'));
+                            copy2clipboard(bin2text(keydata));
+                        })
+                        .catch(function(err) {
+                            console.error(err);
+                        });
+
+                })
+                .catch(function(err) {
+                    console.error(err);
+                });
+
+        }
+
+        $('#copy_mypubkey_btn').onclick = function() {
+            // 获取Dom节点
+            var copyArea = document.getElementById('my_pubkey');
+            //  用select函数将文本内容选中
+            copyArea.select();
+            if (document.execCommand('Copy')) {
+                document.execCommand('Copy');
+                alert('请将复制内容发送给朋友');
+            };
+        };
+    </script>
+
+
+
+
+    <script>
+        //general functions
+
+
+        function RSAencrypt(PUBLIC_KEY, SECRET_TXT) {
+            //使用公钥加密
+            var encrypt = new JSEncrypt();
+            //encrypt.setPrivateKey('-----BEGIN RSA PRIVATE KEY-----'+PRIVATE_KEY+'-----END RSA PRIVATE KEY-----');
+            encrypt.setPublicKey('-----BEGIN PUBLIC KEY-----' + PUBLIC_KEY + '-----END PUBLIC KEY-----');
+            var encrypted = encrypt.encrypt(SECRET_TXT);
+            console.log('加密后数据:%o', encrypted);
+            return encrypted;
+        };
+
+        function RSAdecrypt(PRIVATE_KEY, encrypted) {
+            //使用私钥解密
+            var decrypt = new JSEncrypt();
+            //decrypt.setPublicKey('-----BEGIN PUBLIC KEY-----' + PUBLIC_KEY + '-----END PUBLIC KEY-----');
+            decrypt.setPrivateKey('-----BEGIN RSA PRIVATE KEY-----' + PRIVATE_KEY + '-----END RSA PRIVATE KEY-----');
+            var uncrypted = decrypt.decrypt(encrypted);
+            console.log('解密后数据:%o', uncrypted);
+            return uncrypted;
+        };
+
+        function copy2clipboard(msg) {
+            //alert('开始复制' + msg);
+            const inputTemp = document.createElement('input');
+            //inputTemp.setAttribute('readonly', 'readonly');
+            inputTemp.setAttribute('value', msg);
+            document.body.appendChild(inputTemp);
+            //inputTemp.setSelectionRange(0, input.value.length);
+            inputTemp.setSelectionRange(0, 9999);
+            if (document.execCommand('copy')) {
+                document.execCommand('copy');
+                console.log('内容已复制');
+                alert("内容已复制");
+            };
+            document.body.removeChild(inputTemp);
+        };
+    </script>
+
+
+
+</body>
+
+</html>

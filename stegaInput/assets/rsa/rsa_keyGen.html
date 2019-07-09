@@ -1,0 +1,93 @@
+<!--弄了好几天，通过Html生成RSA的公钥和私钥，是在浏览器中生成RSA的公钥私钥，用户本地保存私钥，公钥发送服务器。比较可靠。代码贡献。如有问题 ，联系我QQ：3076688760-->
+<html>
+<meta charset="utf-8"/>
+<head>
+    <style>
+        input,
+        textarea {
+            display: block;
+            width: 100%;
+        }
+        
+        #private {
+            background: palevioletred;
+        }
+        
+        #public {
+            background: lightgreen;
+        }
+    </style>
+</head>
+
+	<body>
+		<input type="button" id="generate" value="generate keypair"> This is your PUBLIC key. Send it to sender and ask them to use encrypt.html to encrypt a message for you.
+		<textarea id="public" readonly onfocus="this.select();"></textarea> This is your PRIVATE key. Do not send it to anyone! Instead, save it and use decrypt.html to decrypt an encrypted message.
+		<textarea id="private" readonly onfocus="this.select();"></textarea> Note: These two keys form a pair: messages encrypted with above public key can be decrypted only with above private key.
+		<script>
+			function $(s) {
+				return document.querySelector(s)
+			};
+
+			function bin2text(bin) {
+				return btoa(String.fromCharCode(...new Uint8Array(bin)));
+			}
+
+			function autosize(textarea) {
+				textarea.style.height = "";
+				textarea.style.height = textarea.scrollHeight + 3 + "px"
+			};
+
+			$('#generate').onclick = function() {
+
+				window.crypto.subtle.generateKey({
+						name: "RSA-OAEP",
+						modulusLength: 1024, //can be 1024, 2048, or 4096
+						publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+						hash: {
+							name: "SHA-256"
+						}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+					},
+					true, //whether the key is extractable (i.e. can be used in exportKey)
+					["encrypt", "decrypt"] //must be ["encrypt", "decrypt"] or ["wrapKey", "unwrapKey"]
+				)
+				.then(function(key) {
+					//returns a keypair object
+					window.crypto.subtle.exportKey(
+						"pkcs8", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+						key.privateKey //can be a publicKey or privateKey, as long as extractable was true
+					)
+					.then(function(keydata) {
+						//returns the exported key data
+						console.log('private', keydata);
+						// $('#private').value=keydata.n;
+						$('#private').value = bin2text(keydata);
+						autosize($('#private'));
+					})
+					.catch(function(err) {
+						console.error(err);
+					});
+					window.crypto.subtle.exportKey(
+						"spki", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+						key.publicKey //can be a publicKey or privateKey, as long as extractable was true
+					)
+					.then(function(keydata) {
+						//returns the exported key data
+						console.log('public', keydata);
+						$('#public').value = bin2text(keydata);
+						autosize($('#public'));
+					})
+					.catch(function(err) {
+						console.error(err);
+					});
+
+				})
+				.catch(function(err) {
+					console.error(err);
+				});
+
+			}
+		</script>
+
+	</body>
+
+</html>

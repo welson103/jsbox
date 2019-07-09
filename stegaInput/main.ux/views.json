@@ -1,0 +1,91 @@
+{
+  "props" : {
+    "id" : "main"
+  },
+  "views" : [
+    {
+      "props" : {
+        "id" : "button[0]",
+        "title" : "Hello",
+        "frame" : {
+          "y" : 120,
+          "x" : 138,
+          "width" : 100,
+          "height" : 36
+        }
+      },
+      "constraints" : [
+        {
+          "y" : {
+            "id" : "main",
+            "attribute" : 9
+          },
+          "relation" : 0,
+          "multiplier" : 1,
+          "x" : {
+            "id" : "button[0]",
+            "attribute" : 9
+          },
+          "constant" : 0
+        },
+        {
+          "y" : {
+            "id" : "main",
+            "attribute" : 7
+          },
+          "relation" : 0,
+          "multiplier" : 0.30000000000000016,
+          "x" : {
+            "id" : "button[0]",
+            "attribute" : 7
+          },
+          "constant" : 0
+        }
+      ],
+      "type" : "button",
+      "events" : {
+        "ready" : {
+          "$type" : "$event",
+          "$props" : {
+            "selector" : "ready"
+          }
+        },
+        "tapped" : {
+          "$type" : "$event",
+          "$props" : {
+            "selector" : "tapped"
+          }
+        }
+      }
+    },
+    {
+      "type" : "view",
+      "props" : {
+        "frame" : {
+          "y" : 230,
+          "x" : 138,
+          "width" : 100,
+          "height" : 100
+        },
+        "bgcolor" : {
+          "$type" : "$color",
+          "$props" : {
+            "red" : 238,
+            "alpha" : 1,
+            "blue" : 241,
+            "green" : 241
+          }
+        },
+        "id" : "view[0]"
+      },
+      "events" : {
+        "ready" : {
+          "$type" : "$event",
+          "$props" : {
+            "selector" : "viewReady"
+          }
+        }
+      }
+    }
+  ]
+}
